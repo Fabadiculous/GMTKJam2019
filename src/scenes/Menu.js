@@ -11,7 +11,8 @@ class Menu extends Phaser.Scene {
             {key: 'bullet', url: 'bullet.png'}, 
             {key:'enemy', url: 'enemy.png'}, 
             {key: 'player', url: 'player.png'},
-            {key: 'reticle', url: 'reticle.png'}
+            {key: 'reticle', url: 'reticle.png'},
+            {key: 'wall', url: 'wall.png'}
         ])
     }
 
