@@ -8,7 +8,11 @@ const config = {
     type: Phaser.AUTO,
     backgroundColor: '#00BFFF',
     physics: {
-        default: 'arcade'
+        default: 'arcade',
+        arcade: {
+            debug: true
+        }
+        
     },
     scale: {
         parent: 'game-div',
