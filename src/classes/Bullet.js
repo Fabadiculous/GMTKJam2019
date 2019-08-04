@@ -31,7 +31,8 @@ class Bullet extends Phaser.Physics.Arcade.Image {
     reset() {
         this.setVelocity(0);
         //reset the body
-        this.enableBody(true, 0, 0, false, false);
+        this.enableBody(true, -32, -32, false, false);
+        this.disableBody();
         this.setVisible(false);
         this.emit('bulletDead', this);
         this.bounces = this.MAXBOUNCES;
