@@ -16,21 +16,35 @@ class Play extends Phaser.Scene {
 
         this.justStarted = true; //Of the scene just started. 
         //Used for hacky check of if the spacebar has been held down since last scene
-        console.log(this.cameras.main.height)
+        let blockSize = 64;
+        let blocksWidth = this.cameras.main.width/blockSize;
+        let blocksHeight = this.cameras.main.height/blockSize;
+
+
         //Phases of the game
         this.data.set('aiming', true);
         this.data.set('powerSelect', false);        
         this.data.set('score', 0);
-
-        this.player = this.add.image(0.1*this.dimensions.width, 0.7*this.dimensions.height, 'player');
+        this.data.set('level', 1);
 
         
+        this.walls = this.physics.add.staticGroup(
+            {
+            defaultKey: 'wall',
+            immovable: true,
+            enable: false,
+            active: false,
+            visible: false,
+            maxSize: blocksHeight*blocksWidth/2
+        });
+
+        this.createWalls();
+        this.player = this.add.image(2*blockSize, this.dimensions.height - 2*blockSize, 'player');
 
         this.reticle = this.add.image(this.player.x, this.player.y-100, 'reticle');
         this.reticle.setData('clockwise', true);
         
-
-        this.enemy = this.physics.add.image(0.9*this.dimensions.width, 0.1*this.dimensions.height, 'enemy');
+        this.enemy = this.physics.add.image(this.dimensions.width - blockSize, blockSize, 'enemy');
         this.enemy.setData('alive', true);
         this.enemyTween = this.add.tween({
             targets: this.enemy,
@@ -51,6 +65,7 @@ class Play extends Phaser.Scene {
         }, this);
 
         this.physics.add.overlap(this.enemy, this.bullet, this.hitEnemy, null, this);
+        this.physics.add.collider(this.bullet, this.walls, this.bullet.reduceBounce, null, this.bullet);
 
         this.makePowerBar();
         this.powerBar = this.add.image(this.player.x - 64, this.player.y + 32, 'powerBar');
@@ -149,6 +164,7 @@ class Play extends Phaser.Scene {
     }
 
     resetLevel() {
+        console.log('reset level')
         this.data.set('aiming', true);
         this.data.set('powerSelect', false);
         this.data.set('fired', false);
@@ -158,7 +174,7 @@ class Play extends Phaser.Scene {
     }
 
     nextLevel() {
-        this.level++;
+        this.data.values.level++;
         this.resetLevel();
         this.enemy.setScale(1)
         this.enemy.setData('alive', true);
@@ -174,6 +190,15 @@ class Play extends Phaser.Scene {
         if (bounces != this.bullet.bounces) {
             this.powerText.setText(bounces.toString())
         }
+    }
+
+    createWalls() {
+        let level = this.data.get('level');
+
+        for (let gridSpace in this.levelData[level]) {
+            this.walls.create()
+        }
+        
     }
 }
 
